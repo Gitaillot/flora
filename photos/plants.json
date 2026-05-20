@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "nom": "Pissenlit",
+    "nom_latin": "Taraxacum officinale",
+    "famille": "Asteraceae",
+    "region": "Europe, Asie, Amérique du Nord",
+    "photo": "photos/pissenlit.jpg",
+    "description": "Plante herbacée vivace à fleurs jaunes caractéristiques.",
+    "indices": ["Feuilles en rosette dentelées", "Fleur jaune composée", "Tige creuse avec latex blanc"]
+  }
+]
