@@ -2,12 +2,223 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Flora — Test</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f9f6f0;
+      color: #2c2c2c;
+    }
+    h1 { color: #3a6b35; }
+    nav { margin: 20px 0; }
+    nav button {
+      margin-right: 10px;
+      padding: 8px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      border: 2px solid #3a6b35;
+      background: white;
+      color: #3a6b35;
+      border-radius: 4px;
+    }
+    nav button.actif {
+      background: #3a6b35;
+      color: white;
+    }
+    .carte {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .carte img {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #eee;
+    }
+    .img-erreur {
+      width: 100%;
+      height: 200px;
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      border-radius: 4px;
+      font-style: italic;
+    }
+    .nom-latin { font-style: italic; color: #666; }
+    .famille { font-size: 0.9em; color: #888; margin-bottom: 10px; }
+    .indices { padding-left: 20px; }
+    .nav-plante { margin-top: 15px; }
+    .nav-plante button {
+      padding: 6px 16px;
+      margin-right: 8px;
+      cursor: pointer;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      background: white;
+    }
+    .choix button {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 1em;
+      cursor: pointer;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      background: white;
+      text-align: left;
+    }
+    .choix button.correct { background: #d4edda; border-color: #3a6b35; }
+    .choix button.faux    { background: #f8d7da; border-color: #a00; }
+    .score { font-size: 1.1em; font-weight: bold; color: #3a6b35; margin-top: 10px; }
+    #message { margin-top: 10px; font-weight: bold; min-height: 24px; }
+  </style>
 </head>
 <body>
-  <h1>Flora fonctionne !</h1>
-  <p>Si vous voyez cette page, GitHub Pages est correctement configuré.</p>
-  <img src="photos/pissenlit.jpg" alt="Photo de test" width="400">
-  <p><em>Si l'image ci-dessus est cassée, le dossier photos/ n'est pas encore configuré — c'est normal pour l'instant.</em></p>
+
+<h1>🌿 Flora — Test</h1>
+
+<nav>
+  <button id="btn-apprendre" class="actif" onclick="afficherMode('apprendre')">Apprendre</button>
+  <button id="btn-quiz" onclick="afficherMode('quiz')">Quiz</button>
+</nav>
+
+<div id="zone"></div>
+
+<script>
+let plantes = [];
+let indexActuel = 0;
+let scoreQuiz = 0;
+let questionQuiz = 0;
+let ordreQuiz = [];
+
+fetch('plants.json')
+  .then(r => r.json())
+  .then(data => {
+    plantes = data;
+    afficherMode('apprendre');
+  })
+  .catch(() => {
+    document.getElementById('zone').innerHTML =
+      '<p style="color:red">Erreur : impossible de charger plants.json. Vérifiez que le fichier est bien uploadé sur GitHub.</p>';
+  });
+
+function afficherMode(mode) {
+  document.getElementById('btn-apprendre').classList.toggle('actif', mode === 'apprendre');
+  document.getElementById('btn-quiz').classList.toggle('actif', mode === 'quiz');
+  if (mode === 'apprendre') afficherApprendre(0);
+  else demarrerQuiz();
+}
+
+/* MODE APPRENDRE */
+function afficherApprendre(i) {
+  indexActuel = i;
+  const p = plantes[i];
+  const total = plantes.length;
+  document.getElementById('zone').innerHTML = `
+    <div class="carte">
+      <div id="img-conteneur"></div>
+      <h2>${p.nom}</h2>
+      <p class="nom-latin">${p.nom_latin}</p>
+      <p class="famille">Famille : ${p.famille}</p>
+      <ul class="indices">${p.indices.map(ind => `<li>${ind}</li>`).join('')}</ul>
+      <div class="nav-plante">
+        ${i > 0 ? `<button onclick="afficherApprendre(${i-1})">← Précédent</button>` : ''}
+        <span>${i+1} / ${total}</span>
+        ${i < total-1 ? `<button onclick="afficherApprendre(${i+1})">Suivant →</button>` : ''}
+      </div>
+    </div>`;
+
+  const img = new Image();
+  img.onload = () => {
+    img.style.cssText = 'width:100%;max-height:350px;object-fit:cover;border-radius:4px;';
+    document.getElementById('img-conteneur').appendChild(img);
+  };
+  img.onerror = () => {
+    document.getElementById('img-conteneur').innerHTML =
+      `<div class="img-erreur">Photo non trouvée : ${p.photo}</div>`;
+  };
+  img.src = p.photo;
+  img.alt = p.nom;
+}
+
+/* MODE QUIZ */
+function demarrerQuiz() {
+  scoreQuiz = 0;
+  questionQuiz = 0;
+  ordreQuiz = [...plantes].sort(() => Math.random() - 0.5);
+  afficherQuestion();
+}
+
+function afficherQuestion() {
+  if (questionQuiz >= ordreQuiz.length) {
+    document.getElementById('zone').innerHTML = `
+      <div class="carte">
+        <h2>Quiz terminé !</h2>
+        <p class="score">Score : ${scoreQuiz} / ${ordreQuiz.length}</p>
+        <button onclick="demarrerQuiz()" style="margin-top:15px;padding:8px 20px;cursor:pointer;">Recommencer</button>
+      </div>`;
+    return;
+  }
+
+  const p = ordreQuiz[questionQuiz];
+  const mauvais = plantes.filter(x => x.id !== p.id).sort(() => Math.random() - 0.5).slice(0, 2);
+  const choix = [p, ...mauvais].sort(() => Math.random() - 0.5);
+
+  document.getElementById('zone').innerHTML = `
+    <div class="carte">
+      <p style="color:#888;font-size:0.9em">Question ${questionQuiz+1} / ${ordreQuiz.length}</p>
+      <div id="img-quiz"></div>
+      <p style="margin-top:12px"><strong>Quelle est cette plante ?</strong></p>
+      <div class="choix">
+        ${choix.map(c => `<button onclick="repondre(${c.id}, ${p.id}, this)">${c.nom}<br><span style="font-style:italic;font-size:0.85em;color:#666">${c.nom_latin}</span></button>`).join('')}
+      </div>
+      <div id="message"></div>
+      <p class="score">Score : ${scoreQuiz} / ${questionQuiz}</p>
+    </div>`;
+
+  const img = new Image();
+  img.onload = () => {
+    img.style.cssText = 'width:100%;max-height:300px;object-fit:cover;border-radius:4px;margin-bottom:10px;';
+    document.getElementById('img-quiz').appendChild(img);
+  };
+  img.onerror = () => {
+    document.getElementById('img-quiz').innerHTML =
+      `<div class="img-erreur">Photo non trouvée : ${p.photo}</div>`;
+  };
+  img.src = p.photo;
+  img.alt = '?';
+}
+
+function repondre(idChoisi, idCorrect, btn) {
+  const boutons = document.querySelectorAll('.choix button');
+  boutons.forEach(b => b.disabled = true);
+
+  const correct = idChoisi === idCorrect;
+  btn.classList.add(correct ? 'correct' : 'faux');
+  if (!correct) {
+    boutons.forEach(b => {
+      if (parseInt(b.getAttribute('onclick').match(/\d+/)[0]) === idCorrect)
+        b.classList.add('correct');
+    });
+  }
+  if (correct) scoreQuiz++;
+
+  document.getElementById('message').textContent = correct ? '✅ Correct !' : '❌ Incorrect.';
+
+  questionQuiz++;
+  setTimeout(afficherQuestion, 1500);
+}
+</script>
 </body>
 </html>
