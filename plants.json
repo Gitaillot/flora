@@ -4,23 +4,29 @@
     "nom": "Souci des jardins",
     "nom_latin": "Calendula officinalis",
     "famille": "Asteraceae",
-    "photo": "photos/Fleur_iN_Calendula_officinalis.jpg",
-    "indices": ["Fleurs orange ou jaunes", "Feuilles allongées et légèrement poilues", "Odeur aromatique caractéristique"]
+    "formule_florale": "⚥ K5 C(5+) A(5) G(∞)",
+    "type_fruit": "Akène incurvé ou enroulé",
+    "caracteristiques": "Capitule avec fleurons ligulés orange/jaune en périphérie et fleurons tubulés au centre. Feuilles alternes, sessiles, légèrement poilues. Odeur aromatique caractéristique.",
+    "photo": "photos/Fleur_iN_Calendula_officinalis.jpg"
   },
   {
     "id": 2,
     "nom": "Navet sauvage",
     "nom_latin": "Brassica rapa",
     "famille": "Brassicaceae",
-    "photo": "photos/Fleur_iN_Brassica_rapa.jpg",
-    "indices": ["Fleurs jaunes à 4 pétales", "Feuilles basales lobées", "Siliques allongées"]
+    "formule_florale": "⚥ K2+2 C4 A2+4 G(2)",
+    "type_fruit": "Silique allongée (3–7 cm)",
+    "caracteristiques": "Fleurs jaunes à 4 pétales en croix (crucifère). Feuilles basales lobées-lyrées, glauques et amplexicaules en haut. Inflorescence en corymbe.",
+    "photo": "photos/Fleur_iN_Brassica_rapa.jpg"
   },
   {
     "id": 3,
     "nom": "Cardamine des prés",
     "nom_latin": "Cardamine pratensis",
     "famille": "Brassicaceae",
-    "photo": "photos/Fleur_iN_Cardamine_pratensis.jpg",
-    "indices": ["Fleurs roses à lilas à 4 pétales", "Feuilles pennées", "Pousse dans les prairies humides"]
+    "formule_florale": "⚥ K2+2 C4 A2+4 G(2)",
+    "type_fruit": "Silique étroite et dressée (2–4 cm)",
+    "caracteristiques": "Fleurs roses à lilas pâle, 4 pétales. Feuilles pennées à folioles arrondies (basales) ou étroites (caulinaires). Pousse dans les prairies humides et les fossés.",
+    "photo": "photos/Fleur_iN_Cardamine_pratensis.jpg"
   }
 ]
